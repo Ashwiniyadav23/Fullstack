@@ -29,3 +29,6 @@ database.once('connected',() =>{
 })
 
 app.use('/api',routes)
+app.use('/',(req,res) =>{
+    res.send("Backend stored")
+})
