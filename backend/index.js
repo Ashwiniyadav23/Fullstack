@@ -11,10 +11,9 @@ const routes = require('./routes/routes')
 const app = express();
 app.use(express.json());
 app.use(cors())
-app.listen(5000,()=>{
-    console.log(`http://localhost:${5000}`)
+app.listen(5002,()=>{
+    console.log(`http://localhost:${5002}`)
 })
-
 
 mongoose.connect(mongoString);
 const database = mongoose.connection
