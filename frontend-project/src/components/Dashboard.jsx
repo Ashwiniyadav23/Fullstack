@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
-import data from "./Data";
 import {
   BarChart,
   Bar,
@@ -16,29 +15,42 @@ import {
   Brush
 } from "recharts";
 import "./Dashboard.css";
-import { FaMoon, FaSun } from "react-icons/fa"; // Importing icons
+import { FaMoon, FaSun } from "react-icons/fa"; 
 
 const Dashboard = () => {
   const [chartData, setChartData] = useState([]);
   const [selectedLetter, setSelectedLetter] = useState(null);
-  const [date, setDate] = useState(new Date());
+  const [data, setData] = useState([]);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [ageGroup, setAgeGroup] = useState("15-25");
   const [gender, setGender] = useState("male");
   const [dateRange, setDateRange] = useState([new Date("2022-04-10"), new Date("2022-10-06")]);
-  const [selectedDate, setSelectedDate] = useState(""); // New state for the date input
+  const [selectedDate, setSelectedDate] = useState(""); 
 
   useEffect(() => {
-    // Filter data based on selected age group, gender, and date range
-    const filteredData = data.filter(
-      (entry) =>
-        entry.Age === ageGroup &&
-        entry.Gender.toLowerCase() === gender &&
-        new Date(entry.Day) >= dateRange[0] &&
-        new Date(entry.Day) <= dateRange[1]
-    );
-    setChartData(filteredData);
-  }, [ageGroup, gender, dateRange]);
+    // Fetch data from API
+    fetch("https://sheetdb.io/api/v1/j5ha23zpngsnk")
+      .then((response) => response.json())
+      .then((result) => {
+        setData(result); 
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (data.length > 0) {
+      const filteredData = data.filter(
+        (entry) =>
+          entry.Age === ageGroup &&
+          entry.Gender.toLowerCase() === gender &&
+          new Date(entry.Day) >= dateRange[0] &&
+          new Date(entry.Day) <= dateRange[1]
+      );
+      setChartData(filteredData);
+    }
+  }, [data, ageGroup, gender, dateRange]); 
 
   const handleBarClick = (letter) => {
     setSelectedLetter(letter);
@@ -46,7 +58,6 @@ const Dashboard = () => {
 
   const handleLogout = () => {
     alert("Logged out successfully!");
-    // Add actual logout logic here if needed (e.g., redirect, clear session)
   };
 
   const toggleTheme = () => {
@@ -125,7 +136,6 @@ const Dashboard = () => {
           />
         </div>
 
-        {/* Simple Date Input */}
         <div>
           <label htmlFor="simple-date">Select a Date:</label>
           <input
